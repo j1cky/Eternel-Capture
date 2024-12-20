@@ -93,8 +93,20 @@ def compress_image(input_path, output_path, max_size_mb=128, quality=85):
             img.save(output_path, format="JPEG", quality=quality, optimize=True, progressive=True)
 
 def process_images(brut_folder, compressed_folder, name_prefix):
-    if not os.path.exists(compressed_folder):
-        os.makedirs(compressed_folder)
+    # List files in the folder and filter for images
+    image_files = [f for f in os.listdir(brut_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+    total_files = len(image_files)
+    
+    # Create a progress bar window
+    progress_window = Tk()
+    progress_window.title("Processing...")
+    apply_geometry(progress_window)
+    progress_window.deiconify()
+
+    ttk.Label(progress_window, text="Compression de photos, veillez attendre...").pack(pady=10)
+    progress_bar = ttk.Progressbar(progress_window, length=300, mode='determinate', maximum=total_files)
+    progress_bar.pack(pady=20)
+    progress_window.update()
     
     # Process each image in the brut files folder
     for idx, filename in enumerate(os.listdir(brut_folder), 1):
@@ -105,7 +117,11 @@ def process_images(brut_folder, compressed_folder, name_prefix):
 
             print(f"Compressing {filename} -> {output_filename}")
             compress_image(input_path, output_path)
+        # Update the progress bar
+        progress_bar['value'] = idx
+        progress_window.update_idletasks()
 
+    progress_window.destroy() 
     show_custom_message(bar_title="C'est fait !", geometry=current_geometry,message_text="Compression terminée :D")
 
 def open_compression_window():
