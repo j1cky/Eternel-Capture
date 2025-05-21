@@ -535,7 +535,7 @@ def add_logo_to_image(image_path, logo_path, output_path, opacity=80):
     else:
         # Portrait
         grid_columns = 8
-        grid_lines = 20
+        grid_lines = 17
         pos_x = img_width - (img_width // grid_columns) 
         pos_y = img_height - (img_height // grid_lines)  
 
